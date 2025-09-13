@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     
     SECRET_KEY: str = "this_is_a_secret"
     ALGORITHM: str = "HS256"
+    TOKEN_EXPIRATION_MINUTES: int = 60
 
 
 settings = Settings()
