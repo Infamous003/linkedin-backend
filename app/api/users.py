@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException, Depends
-from ..schemas.user import UserCreate, UserPublic, UserUpdate
-from ..models.user import User
+from ..schemas.user import UserPublic, UserUpdate
+from ..models.models import User
 from ..db.session import get_session
 from sqlmodel import Session, select
 from .deps import get_password_hash

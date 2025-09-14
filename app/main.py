@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .db.session import init_db
 from contextlib import asynccontextmanager
-from .api import users, auth
+from .api import users, auth, posts
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,6 +14,8 @@ app = FastAPI(title="LinkedIn Analytics API",
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(posts.router)
+
 
 @app.get("/")
 def home():

@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException, Depends
 from ..db.session import get_session
 from sqlmodel import Session, select
-from ..models.user import User
+from ..models.models import User
 from ..schemas.user import UserPublic
 from passlib.context import CryptContext
 import jwt
