@@ -7,7 +7,6 @@ from ..db.session import engine
 
 def publish_scheduled_posts():
     now = datetime.now(timezone.utc)
-    # session = get_session()
     with Session(engine) as session:
         query = select(Post).where(Post.status == "SCHEDULED", Post.scheduled_at <= now)
         posts_to_publish = session.exec(query).all()
@@ -19,7 +18,3 @@ def publish_scheduled_posts():
 
 def fake_linkedin_api_call(post: Post):
     print(f"-----Publishing post with ID: {post.id}")
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(publish_scheduled_posts, "interval", minutes=1)
-scheduler.start()
