@@ -1,10 +1,11 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from ..schemas.post import PostCreate, PostPublic, PostUpdate
-from ..models.models import User, Post
+from ..schemas.reaction import ReactionPublic
+from ..models.models import User, Post, Reaction
 from ..db.session import get_session
 from sqlmodel import Session, select
 from .auth import get_current_user
-from ..models.enums import Role, Status
+from ..models.enums import Role, Status, ReactionType
 from datetime import datetime, timezone, timedelta
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -136,3 +137,70 @@ async def delete_posts(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized access. You don't have to permission to modify/delete this post")
     session.delete(post_found)
     session.commit()
+
+
+@router.get(
+    "/{id}/reactions", 
+    status_code=status.HTTP_201_CREATED,
+    response_model=list[ReactionPublic]
+)
+async def get_reactions(
+    id: int,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    query = select(Reaction).where(Reaction.post_id == id)
+    reactions = session.exec(query).fetchall()
+
+    return reactions
+
+
+@router.post(
+    "/{id}/reactions", 
+    status_code=status.HTTP_201_CREATED,
+    response_model=ReactionPublic
+)
+async def create_reactions(
+    id: int, 
+    reaction: ReactionType,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    query = select(Post).where(Post.id == id)
+    post_found = session.exec(query).one_or_none()
+
+    if post_found is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+
+    query = select(Reaction).where(Reaction.post_id == id, Reaction.user_id == current_user.id)
+    reaction_found = session.exec(query).one_or_none()
+
+    if reaction_found is not None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="You have already reacted to this post")
+
+    new_reaction = Reaction(post_id=id, user_id=current_user.id, type=reaction)
+    print(new_reaction)
+    session.add(new_reaction)
+    session.commit()
+    session.refresh(new_reaction)
+    return new_reaction
+
+
+@router.delete(
+    "/{id}/reactions", 
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_reactions(
+    id: int, 
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    query = select(Reaction).where(Reaction.post_id == id, Reaction.user_id == current_user.id)
+    reaction = session.exec(query).one_or_none()
+
+    if reaction is None:
+        raise HTTPException(status_code=404, detail="Reaction not found")
+
+    session.delete(reaction)
+    session.commit()
+    return  

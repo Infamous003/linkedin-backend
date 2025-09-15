@@ -10,3 +10,11 @@ class Status(str, Enum):
     PUBLISHED = "published"
     DRAFT = "draft"
 
+
+class ReactionType(str, Enum):
+    LIKE = "like"
+    CELEBRATE = "celebrate"
+    SUPPORT = "support"
+    LOVE = "love"
+    INSIGHTFUL = "insightful"
+    FUNNY = "funny"
