@@ -61,6 +61,12 @@ def get_posts(
     post_found = session.exec(query).one_or_none()
     if post_found is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Post not found')
+    
+    # simulating a view. Each time this post is requested, increase the impression/view
+    post_found.impressions += 1
+    session.add(post_found)
+    session.commit()
+    session.refresh(post_found)
     return post_found
 
 
