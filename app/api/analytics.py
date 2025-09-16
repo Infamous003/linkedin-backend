@@ -50,11 +50,10 @@ async def get_post_analytics(
 
 
 
-@router.get("/analytics/posts/top", status_code=200)
+@router.get("/posts/top", status_code=200)
 async def get_top_posts(
     limit: int = 3,
-    session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     query = text("""
         SELECT 

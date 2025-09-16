@@ -117,7 +117,6 @@ async def update_posts(id: int,
 
     if post.title: post_found.title = post.title
     if post.body: post_found.body = post.body
-    if post.status: post_found.status = post.status
     if post.scheduled_at: post_found.scheduled_at = post.scheduled_at
 
     session.add(post_found)

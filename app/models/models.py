@@ -37,8 +37,8 @@ class Reaction(SQLModel, table=True):
     __table_args__ = (UniqueConstraint("post_id", "user_id", name="uq_post_user_reaction"),)
 
     id: int | None = Field(default=None, primary_key=True)
-    post_id: int = Field(foreign_key="posts.id", nullable=False)
-    user_id: int = Field(foreign_key="users.id", nullable=False)
+    post_id: int | None = Field(foreign_key="posts.id", nullable=False)
+    user_id: int | None = Field(foreign_key="users.id", ondelete="CASCADE")
     type: ReactionType = Field(nullable=False)
     created_at: datetime = Field(default_factory=partial(datetime.now, timezone.utc))
 

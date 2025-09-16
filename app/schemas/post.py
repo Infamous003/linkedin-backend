@@ -25,4 +25,4 @@ class PostCreate(BaseModel):
 class PostUpdate(BaseModel):
     title: str | None = None
     body: str | None = None
-    scheduled_at: datetime | None
+    scheduled_at: datetime | None = None
