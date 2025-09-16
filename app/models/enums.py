@@ -18,3 +18,8 @@ class ReactionType(str, Enum):
     LOVE = "love"
     INSIGHTFUL = "insightful"
     FUNNY = "funny"
+
+
+class MetricType(str, Enum):
+    ENGAGEMENT = "engagement"
+    IMPRESSION = "impression"

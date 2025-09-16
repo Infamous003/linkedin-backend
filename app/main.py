@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .db.session import init_db
 from contextlib import asynccontextmanager
-from .api import users, auth, posts
+from .api import users, auth, posts, analytics
 from apscheduler.schedulers.background import BackgroundScheduler
 from .core.scheduler import publish_scheduled_posts
 
@@ -22,6 +22,7 @@ app = FastAPI(title="LinkedIn Analytics API",
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(posts.router)
+app.include_router(analytics.router)
 
 
 @app.get("/")
